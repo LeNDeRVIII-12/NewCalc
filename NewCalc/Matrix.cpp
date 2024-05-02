@@ -120,10 +120,13 @@ void Matrix::setValue(int row, int col, double value)
 	values[row][col] = value;
 }
 
-std::string Matrix::toString() const {
+std::string Matrix::toString() const 
+{
 	std::ostringstream out;
-	for (int i = 0; i < rows; ++i) {
-		for (int j = 0; j < cols; ++j) {
+	for (int i = 0; i < rows; ++i) 
+	{
+		for (int j = 0; j < cols; ++j) 
+		{
 			out << values[i][j];
 			if (j < cols - 1) out << ", ";
 		}
