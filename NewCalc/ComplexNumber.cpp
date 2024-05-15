@@ -1,6 +1,7 @@
 #include "ComplexNumber.h"
 #include <string>
 #include <cmath>
+#include <iostream>
 
 ComplexNumber::ComplexNumber(double real, double imaginary) : real(real), imaginary(imaginary) {}
 
@@ -63,17 +64,20 @@ MathObject* ComplexNumber::divide(const MathObject* other) const
 MathObject* ComplexNumber::power(const MathObject* other) const
 {
 	const ComplexNumber* otherComplex = dynamic_cast<const ComplexNumber*>(other);
-	if (otherComplex && otherComplex->imaginary == 0)
-	{
+	if (otherComplex && otherComplex->imaginary == 0) {
 		double base = std::sqrt(real * real + imaginary * imaginary);
 		double angle = std::atan2(imaginary, real);
 		double exponent = otherComplex->real;
+
 		double newReal = std::pow(base, exponent) * std::cos(exponent * angle);
 		double newImaginary = std::pow(base, exponent) * std::sin(exponent * angle);
+
 		return new ComplexNumber(newReal, newImaginary);
 	}
-	else
+	else {
+		std::cerr << "Ошибка: второй операнд должен быть вещественным числом" << std::endl;
 		return nullptr;
+	}
 }
 
 std::string ComplexNumber::toString() const 

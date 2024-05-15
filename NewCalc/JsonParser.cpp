@@ -40,80 +40,93 @@ void JsonParser::parseVariables(std::unordered_map<std::string, MathObject*>& va
 }
 
 MathObject* JsonParser::createMathObject(const std::string& type, const nlohmann::json& value) const {
-	MathObject* obj = nullptr;
-	if (type == "real") {
-		if (value.is_number_float()) {
-			obj = new RealNumber(value.get<double>());
-		}
-		else {
-			std::cerr << "Неверный формат вещественного числа" << std::endl;
-		}
-	}
-	else if (type == "fraction") {
-		if (value.is_string()) {
-			try {
-				int numerator, denominator;
-				char slash;
-				std::istringstream iss(value.get<std::string>());
-				iss >> numerator >> slash >> denominator;
-				if (!iss || slash != '/') {
-					throw std::invalid_argument("Неверный формат дробного числа");
-				}
-				obj = new Fraction(numerator, denominator);
-			}
-			catch (const std::exception& e) {
-				std::cerr << "Ошибка при создании дробного числа: " << e.what() << std::endl;
-			}
-		}
-		else {
-			std::cerr << "Неверный формат дробного числа" << std::endl;
-		}
-	}
-	else if (type == "complex") {
-		if (value.is_array() && value.size() == 2) {
-			try {
-				double real = value[0].get<double>();
-				double imaginary = value[1].get<double>();
-				obj = new ComplexNumber(real, imaginary);
-			}
-			catch (const std::exception& e) {
-				std::cerr << "Ошибка при создании комплексного числа: " << e.what() << std::endl;
-			}
-		}
-		else {
-			std::cerr << "Неверный формат комплексного числа" << std::endl;
-		}
-	}
-
-	else if (type == "matrix") {
-		if (value.is_string()) {
-			try {
-				std::istringstream iss(value.get<std::string>());
-				std::vector<std::vector<double>> matrixValues;
-				std::vector<double> row;
-				std::string token;
-				while (std::getline(iss, token, ';')) {
-					std::istringstream rowStream(token);
-					row.clear();
-					double val;
-					while (rowStream >> val) {
-						row.push_back(val);
-						if (!rowStream.eof()) {
-							rowStream.clear();
-							rowStream.ignore();
-						}
-					}
-					matrixValues.push_back(row);
-				}
-				obj = new Matrix(matrixValues);
-			}
-			catch (const std::exception& e) {
-				std::cerr << "Ошибка при создании матрицы: " << e.what() << std::endl;
-			}
-		}
-		else {
-			std::cerr << "Неверный формат матрицы" << std::endl;
-		}
-	}
-	return obj;
+    MathObject* obj = nullptr;
+    if (type == "real") {
+        if (value.is_number_float()) {
+            obj = new RealNumber(value.get<double>());
+        }
+        else {
+            std::cerr << "Неверный формат вещественного числа" << std::endl;
+        }
+    }
+    else if (type == "fraction") {
+        if (value.is_string()) {
+            try {
+                int numerator, denominator;
+                char slash;
+                std::istringstream iss(value.get<std::string>());
+                iss >> numerator >> slash >> denominator;
+                if (!iss || slash != '/') {
+                    throw std::invalid_argument("Неверный формат дробного числа");
+                }
+                obj = new Fraction(numerator, denominator);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Ошибка при создании дробного числа: " << e.what() << std::endl;
+            }
+        }
+        else {
+            std::cerr << "Неверный формат дробного числа" << std::endl;
+        }
+    }
+    else if (type == "complex") {
+        if (value.is_object()) {
+            try {
+                double real = value.value("real", 0.0);
+                double imaginary;
+                if (value.contains("imaginary")) {
+                    imaginary = value.value("imaginary", 0.0);
+                    if (imaginary >= 0) {
+                        obj = new ComplexNumber(real, imaginary);
+                    }
+                    else {
+                        obj = new ComplexNumber(real, imaginary);
+                    }
+                }
+                else {
+                    throw std::invalid_argument("Неверный формат комплексного числа");
+                }
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Ошибка при создании комплексного числа: " << e.what() << std::endl;
+            }
+        }
+        else {
+            std::cerr << "Неверный формат комплексного числа" << std::endl;
+        }
+    }
+    else if (type == "power" && value.is_number_float()) {
+        obj = new RealNumber(value.get<double>());
+    }
+    else if (type == "matrix") {
+        if (value.is_string()) {
+            try {
+                std::istringstream iss(value.get<std::string>());
+                std::vector<std::vector<double>> matrixValues;
+                std::vector<double> row;
+                std::string token;
+                while (std::getline(iss, token, ';')) {
+                    std::istringstream rowStream(token);
+                    row.clear();
+                    double val;
+                    while (rowStream >> val) {
+                        row.push_back(val);
+                        if (!rowStream.eof()) {
+                            rowStream.clear();
+                            rowStream.ignore();
+                        }
+                    }
+                    matrixValues.push_back(row);
+                }
+                obj = new Matrix(matrixValues);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Ошибка при создании матрицы: " << e.what() << std::endl;
+            }
+        }
+        else {
+            std::cerr << "Неверный формат матрицы" << std::endl;
+        }
+    }
+    return obj;
 }

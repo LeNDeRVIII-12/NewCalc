@@ -1,7 +1,14 @@
 {
   "calculatorType": "complex",
-  "expression": "z ^ 2",
+  "expression": "z ^ p",
   "variables": {
-    "z": [ 3, 4 ]
+    "z": {
+      "real": 3,
+      "imaginary": 4
+    },
+    "p": {
+      "real": 2,
+      "imaginary": 0
+    }
   }
 }
