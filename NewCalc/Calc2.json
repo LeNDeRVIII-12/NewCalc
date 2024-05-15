@@ -1,0 +1,7 @@
+{
+  "calculatorType": "complex",
+  "expression": "z ^ 2",
+  "variables": {
+    "z": [ 3, 4 ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "calculatorType": "real",
+  "expression": "x + y * z",
+  "variables": 
+  {
+    "x": 5.0,
+    "y": 2.5,
+    "z": 3.0
+  }
+}
