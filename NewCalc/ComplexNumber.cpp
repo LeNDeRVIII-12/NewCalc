@@ -51,7 +51,7 @@ MathObject* ComplexNumber::divide(const MathObject* other) const
 	{
 		double denominator = otherComplex->real * otherComplex->real + otherComplex->imaginary * otherComplex->imaginary;
 		if (denominator == 0)
-			return nullptr;
+			throw std::invalid_argument("Деление на ноль");
 
 		double newReal = (real * otherComplex->real + imaginary * otherComplex->imaginary) / denominator;
 		double newImaginary = (imaginary * otherComplex->real - real * otherComplex->imaginary) / denominator;

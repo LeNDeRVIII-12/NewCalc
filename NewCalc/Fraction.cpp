@@ -2,6 +2,7 @@
 #include <cmath>
 #include <numeric>
 #include <string>
+#include <iostream>
 
 Fraction::Fraction(int numerator, int denominator) : numerator(numerator), denominator(denominator) 
 {
@@ -58,8 +59,8 @@ MathObject* Fraction::divide(const MathObject* other) const
 	const Fraction* otherFraction = dynamic_cast<const Fraction*>(other);
 	if (otherFraction)
 	{
-		if (otherFraction - numerator == 0)
-			return nullptr;
+		if (otherFraction->numerator == 0)
+			throw std::invalid_argument("Деление на ноль");
 
 		int newNumerator = numerator * otherFraction->denominator;
 		int newDenominator = denominator * otherFraction->numerator;

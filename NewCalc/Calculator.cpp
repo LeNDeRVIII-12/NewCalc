@@ -1,5 +1,6 @@
 #include "Calculator.h"
 #include <stack>
+#include <iostream>
 
 Calculator::Calculator(const std::vector<std::string>& postfixNotation) : postfixNotation(postfixNotation) {}
 
@@ -10,6 +11,9 @@ void Calculator::setVariable(const std::string& variable, MathObject* value)
 
 MathObject* Calculator::evaluate()
 {
+	if (postfixNotation.empty()) {
+		throw std::invalid_argument("Постфиксная нотация пуста");
+	}
 	std::stack<MathObject*> stack;
 
 	for (const std::string& token : postfixNotation)
