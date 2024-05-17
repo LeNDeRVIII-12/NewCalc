@@ -40,7 +40,8 @@ int Parser::getPrecedence(char op) const
 
 void Parser::tokenize()
 {
-	if (expression.empty()) {
+	if (expression.empty())
+	{
 		throw std::invalid_argument("Пустое выражение");
 	}
 

@@ -60,7 +60,10 @@ MathObject* Fraction::divide(const MathObject* other) const
 	if (otherFraction)
 	{
 		if (otherFraction->numerator == 0)
-			throw std::invalid_argument("Деление на ноль");
+		{
+			std::cout << "Деление на 0!" << std::endl;
+			return nullptr;
+		}
 
 		int newNumerator = numerator * otherFraction->denominator;
 		int newDenominator = denominator * otherFraction->numerator;

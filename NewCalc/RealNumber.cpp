@@ -1,6 +1,7 @@
 #include "RealNumber.h"
 #include <cmath>
 #include <string>
+#include <iostream>
 
 RealNumber::RealNumber(double value) : value(value) {}
 
@@ -46,6 +47,11 @@ MathObject* RealNumber::divide(const MathObject* other) const
 	if (otherReal)
 	{
 		double result = value / otherReal->value;
+		if (otherReal->value == 0)
+		{
+			std::cout << "Деление на 0!" << std::endl;
+			return nullptr;
+		}
 		return new RealNumber(result);
 	}
 	else

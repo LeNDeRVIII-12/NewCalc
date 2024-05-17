@@ -1,4 +1,3 @@
-// JsonParser.cpp
 #include "JsonParser.h"
 #include "RealNumber.h"
 #include "Fraction.h"
@@ -8,69 +7,79 @@
 #include <iostream>
 #include <stdexcept>
 
-JsonParser::JsonParser(const std::string& jsonStr) {
+JsonParser::JsonParser(const std::string& jsonStr) 
+{
 	data = nlohmann::json::parse(jsonStr);
 }
 
-std::string JsonParser::getCalculatorType() const {
+std::string JsonParser::getCalculatorType() const 
+{
 	return data["calculatorType"];
 }
 
-std::string JsonParser::getExpression() const {
+std::string JsonParser::getExpression() const 
+{
 	return data["expression"];
 }
 
-std::unordered_map<std::string, MathObject*> JsonParser::getVariables() const {
+std::unordered_map<std::string, MathObject*> JsonParser::getVariables() const 
+{
 	std::unordered_map<std::string, MathObject*> variables;
 	parseVariables(variables);
 	return variables;
 }
 
-void JsonParser::parseVariables(std::unordered_map<std::string, MathObject*>& variables) const {
+void JsonParser::parseVariables(std::unordered_map<std::string, MathObject*>& variables) const 
+{
 	nlohmann::json variablesJson = data["variables"];
-	for (auto it = variablesJson.begin(); it != variablesJson.end(); ++it) {
+	for (auto it = variablesJson.begin(); it != variablesJson.end(); ++it) 
+    {
 		std::string variable = it.key();
 		nlohmann::json valueJson = it.value();
 		std::string type = getCalculatorType();
 		MathObject* value = createMathObject(type, valueJson);
-		if (value) {
+		if (value) 
 			variables[variable] = value;
-		}
 	}
 }
 
-MathObject* JsonParser::createMathObject(const std::string& type, const nlohmann::json& value) const {
+MathObject* JsonParser::createMathObject(const std::string& type, const nlohmann::json& value) const 
+{
     MathObject* obj = nullptr;
-    if (type == "real") {
-        if (value.is_number_float()) {
+    if (type == "real") 
+    {
+        if (value.is_number_float()) 
+        {
             obj = new RealNumber(value.get<double>());
         }
-        else {
+        else
             std::cerr << "Неверный формат вещественного числа" << std::endl;
-        }
     }
     else if (type == "fraction") {
-        if (value.is_string()) {
+        if (value.is_string()) 
+        {
             try {
                 int numerator, denominator;
                 char slash;
                 std::istringstream iss(value.get<std::string>());
                 iss >> numerator >> slash >> denominator;
-                if (!iss || slash != '/') {
+                if (!iss || slash != '/') 
                     throw std::invalid_argument("Неверный формат дробного числа");
-                }
+                
                 obj = new Fraction(numerator, denominator);
             }
-            catch (const std::exception& e) {
+            catch (const std::exception& e) 
+            {
                 std::cerr << "Ошибка при создании дробного числа: " << e.what() << std::endl;
             }
         }
-        else {
-            std::cerr << "Неверный формат дробного числа" << std::endl;
-        }
+        else 
+            std::cerr << "Неверный формат дробного числа" << std::endl;      
     }
-    else if (type == "complex") {
-        if (value.is_object()) {
+    else if (type == "complex") 
+    {
+        if (value.is_object()) 
+        {
             try {
                 double real = value.value("real", 0.0);
                 double imaginary;
@@ -83,35 +92,37 @@ MathObject* JsonParser::createMathObject(const std::string& type, const nlohmann
                         obj = new ComplexNumber(real, imaginary);
                     }
                 }
-                else {
+                else 
                     throw std::invalid_argument("Неверный формат комплексного числа");
-                }
+          
             }
-            catch (const std::exception& e) {
+            catch (const std::exception& e) 
+            {
                 std::cerr << "Ошибка при создании комплексного числа: " << e.what() << std::endl;
             }
         }
-        else {
+        else 
             std::cerr << "Неверный формат комплексного числа" << std::endl;
-        }
     }
-    else if (type == "power" && value.is_number_float()) {
-        obj = new RealNumber(value.get<double>());
-    }
-    else if (type == "matrix") {
-        if (value.is_string()) {
+    else if (type == "matrix") 
+    {
+        if (value.is_string()) 
+        {
             try {
                 std::istringstream iss(value.get<std::string>());
                 std::vector<std::vector<double>> matrixValues;
                 std::vector<double> row;
                 std::string token;
-                while (std::getline(iss, token, ';')) {
+                while (std::getline(iss, token, ';')) 
+                {
                     std::istringstream rowStream(token);
                     row.clear();
                     double val;
-                    while (rowStream >> val) {
+                    while (rowStream >> val) 
+                    {
                         row.push_back(val);
-                        if (!rowStream.eof()) {
+                        if (!rowStream.eof()) 
+                        {
                             rowStream.clear();
                             rowStream.ignore();
                         }
@@ -120,13 +131,13 @@ MathObject* JsonParser::createMathObject(const std::string& type, const nlohmann
                 }
                 obj = new Matrix(matrixValues);
             }
-            catch (const std::exception& e) {
+            catch (const std::exception& e)
+            {
                 std::cerr << "Ошибка при создании матрицы: " << e.what() << std::endl;
             }
         }
-        else {
+        else 
             std::cerr << "Неверный формат матрицы" << std::endl;
-        }
     }
     return obj;
 }

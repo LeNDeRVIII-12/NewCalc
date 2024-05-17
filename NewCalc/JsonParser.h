@@ -5,7 +5,8 @@
 #include "nlohmann/json.hpp"
 #include "MathObject.h"
 
-class JsonParser {
+class JsonParser 
+{
 public:
     JsonParser(const std::string& jsonStr);
     std::string getCalculatorType() const;

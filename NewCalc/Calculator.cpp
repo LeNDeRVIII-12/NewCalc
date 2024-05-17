@@ -11,7 +11,8 @@ void Calculator::setVariable(const std::string& variable, MathObject* value)
 
 MathObject* Calculator::evaluate()
 {
-	if (postfixNotation.empty()) {
+	if (postfixNotation.empty()) 
+	{
 		throw std::invalid_argument("Постфиксная нотация пуста");
 	}
 	std::stack<MathObject*> stack;

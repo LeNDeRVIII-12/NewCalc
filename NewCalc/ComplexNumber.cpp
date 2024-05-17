@@ -51,7 +51,10 @@ MathObject* ComplexNumber::divide(const MathObject* other) const
 	{
 		double denominator = otherComplex->real * otherComplex->real + otherComplex->imaginary * otherComplex->imaginary;
 		if (denominator == 0)
-			throw std::invalid_argument("Деление на ноль");
+		{
+			std::cout << "Деление на ноль" << std::endl;
+			return nullptr;
+		}
 
 		double newReal = (real * otherComplex->real + imaginary * otherComplex->imaginary) / denominator;
 		double newImaginary = (imaginary * otherComplex->real - real * otherComplex->imaginary) / denominator;
@@ -74,7 +77,8 @@ MathObject* ComplexNumber::power(const MathObject* other) const
 
 		return new ComplexNumber(newReal, newImaginary);
 	}
-	else {
+	else 
+	{
 		std::cerr << "Ошибка: второй операнд должен быть вещественным числом" << std::endl;
 		return nullptr;
 	}
